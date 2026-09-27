@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LocalShop — 30-40 Min Delivery</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+:root{
+  --blue:#2274A5;--blue-dark:#154D6E;--blue-light:#DCEBF5;
+  --sandal:#D9B38C;--sandal-dark:#8A5A2B;--sandal-light:#F3E5D3;
+  --hbg:#F0DFC6;--body:#FAF4EA;--ink:#1a1a1a;--muted:#7c8a93;--card:#fff;--red:#dc2626;
+  --gold:#b8860b;
+}
+body{background:#e3d8c6;color:var(--ink);padding-bottom:20px}
+.hidden{display:none}
+.phone{max-width:480px;margin:0 auto;background:var(--body);min-height:100vh;box-shadow:0 0 40px rgba(0,0,0,.18)}
+button{cursor:pointer;font-family:inherit}
+
+/* ===== TOP HEADER ===== */
+.top{background:var(--hbg);padding:12px 16px 0;position:sticky;top:0;z-index:30}
+.top-row1{display:flex;justify-content:space-between;align-items:flex-start}
+.t1{font-size:14px;font-weight:800;color:var(--blue-dark)}
+.delivery{display:flex;align-items:center;gap:8px;margin:2px 0 6px}
+.delivery h1{font-size:26px;font-weight:900;letter-spacing:-.5px}
+.chip{background:#EAD9BF;color:var(--blue-dark);font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:4px}
+.loc{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.loc span{font-weight:400;color:#4a3f30}
+.loc-chip{background:#fff;border:1.5px solid var(--blue);color:var(--blue-dark);font-size:10.5px;font-weight:800;padding:3px 10px;border-radius:12px}
+.loc-chip.live{background:#f0fdf4;border-color:#16a34a;color:#15803d}
+.top-icons{display:flex;gap:10px}
+.icn-btn{width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,.12);position:relative}
+/* 🆕 notification badge */
+.n-badge{position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+.search-wrap{background:#fff;border-radius:14px;display:flex;align-items:center;padding:0 14px;margin:12px 0;box-shadow:0 2px 8px rgba(138,90,43,.12);border:1px solid #E8D8BC}
+.search-wrap input{flex:1;border:none;outline:none;font-size:15px;padding:13px 8px;background:transparent}
+.search-wrap .mag{font-size:17px;opacity:.7}
+.cats{display:flex;overflow-x:auto;gap:6px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat-item{background:none;border:none;padding:8px 12px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:66px;color:#5a4a35;border-bottom:3px solid transparent;font-weight:600;font-size:11.5px}
+.cat-item .c-ico{width:38px;height:38px;border-radius:50%;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 6px rgba(138,90,43,.18)}
+.cat-item .c-ico img{width:100%;height:100%;object-fit:cover}
+.cat-item.active{border-bottom-color:var(--blue-dark);color:var(--blue-dark)}
+
+/* ===== BODY ===== */
+.body-in{padding:14px 14px 130px}
+.banner{border-radius:16px;overflow:hidden;margin-bottom:14px;background:linear-gradient(120deg,#2274A5,#C89B6D);color:#fff;text-align:center;padding:26px 16px;position:relative}
+.banner .b-tag{font-size:12px;letter-spacing:4px;font-weight:700}
+.banner h2{font-size:30px;font-weight:900;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.banner h2 em{color:#F5E3C4;font-style:normal}
+.banner .b-side{position:absolute;font-size:44px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));animation:float 3s ease-in-out infinite}
+.b-l{left:12px;top:20px}.b-r{right:12px;bottom:14px;animation-delay:1.2s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.sec-title{font-size:17px;font-weight:800;margin:16px 0 10px}
+.feed{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.p-card{background:var(--card);border-radius:14px;padding:10px;box-shadow:0 2px 8px rgba(138,90,43,.08);display:flex;flex-direction:column;position:relative}
+.p-card.paused{opacity:.65}
+.p-img{position:relative;height:110px;background:linear-gradient(135deg,#F7EDE0,#FBF6EE);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.p-img .emo{font-size:46px}
+.p-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+.fav{position:absolute;top:6px;right:8px;font-size:14px;z-index:3;background:rgba(255,255,255,.85);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.p-plan{position:absolute;top:6px;left:6px;z-index:3;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:8px;background:linear-gradient(135deg,#f9d976,#f5b942);color:#5c4400}
+.p-plan.elite{background:linear-gradient(135deg,#e0c3fc,#8ec5fc)}
+.qty-row{display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px}
+.qty-row small{color:var(--muted);font-weight:600}
+.stepper{display:flex;align-items:center;gap:8px;border:1.5px solid var(--blue);border-radius:10px;padding:2px 6px;background:#fff}
+.stepper button{background:none;border:none;color:var(--blue);font-size:18px;font-weight:800;line-height:1}
+.stepper b{color:var(--blue);font-size:13px}
+.add-btn{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--blue);background:#fff;color:var(--blue);font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+.add-btn:active{transform:scale(1.15)}
+.pause-tag{font-size:10.5px;font-weight:800;color:#b91c1c;background:#fee2e2;padding:6px 10px;border-radius:8px}
+.price-row{display:flex;align-items:baseline;gap:6px;margin-top:4px}
+.p-price{font-size:15.5px;font-weight:800;color:var(--blue-dark)}
+.p-mrp{font-size:11.5px;color:var(--muted);text-decoration:line-through}
+.p-name{font-size:13.5px;font-weight:700;line-height:1.25;margin-top:6px}
+.p-shop{font-size:11px;color:var(--sandal-dark);margin-top:3px}
+.off-tag{display:inline-block;background:#F0E0C8;color:var(--sandal-dark);font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;margin-top:5px;width:fit-content}
+.time-tag{display:inline-block;background:var(--blue-light);color:var(--blue-dark);font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;margin-top:4px;margin-right:4px;width:fit-content}
+.dist-tag{display:inline-block;background:#F3E5D3;color:var(--sandal-dark);font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;margin-top:4px;width:fit-content}
+.empty-btn{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;border:none;padding:12px 24px;border-radius:12px;font-weight:800;font-size:13.5px;margin-top:14px}
+
+.free-del{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:452px;background:#fff;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.15);padding:10px 14px;display:flex;align-items:center;gap:10px;z-index:25;border:1px solid #E8D8BC}
+.free-del .scoot{font-size:22px}
+.free-del b{font-size:13px;display:block;color:var(--blue-dark)}
+.free-del small{font-size:11.5px;color:var(--muted);display:block}
+.prog{flex:1;height:5px;background:#EADFCC;border-radius:4px;overflow:hidden;margin-top:5px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--sandal));border-radius:4px;transition:width .3s}
+.fd-x{background:none;border:none;font-size:15px;color:var(--muted)}
+.cart-bar{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);width:calc(100% - 60px);max-width:420px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;border:none;border-radius:16px;padding:12px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 24px rgba(21,77,110,.45);z-index:26;font-size:14.5px}
+.cart-bar .c-emos{display:flex}
+.cart-bar .c-emos span{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;border:2px solid var(--blue);margin-left:-10px}
+.cart-bar .c-emos span:first-child{margin-left:0}
+.cart-bar b{display:block;font-size:15.5px}
+.cart-bar small{opacity:.9;font-size:11.5px}
+.cart-bar .arr{margin-left:auto;font-size:18px}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;display:flex;border-top:1px solid #EADFCC;z-index:24;padding:6px 0 10px}
+.bn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;font-weight:700;color:var(--muted)}
+.bn .bn-ico{font-size:21px;position:relative}
+.bn.active{color:var(--blue-dark)}
+
+/* ===== SCREENS ===== */
+.screen-head{background:var(--hbg);padding:14px 16px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px}
+.screen-head .bk{width:36px;height:36px;border-radius:50%;background:#fff;border:none;font-size:16px}
+.screen-head h1{font-size:18px}
+.wrap{max-width:480px;margin:0 auto;padding:14px}
+.cart-item{background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:center;box-shadow:0 2px 8px rgba(138,90,43,.07)}
+.ci-emo{font-size:28px;background:linear-gradient(135deg,#F7EDE0,#FBF6EE);border-radius:12px;width:58px;height:58px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}
+.ci-emo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+.ci-info{flex:1}
+.ci-info h4{font-size:13.5px}
+.ci-info small{color:var(--muted);font-size:11px}
+.ci-right{text-align:right}
+.ci-price{font-weight:800;font-size:14px;color:var(--blue-dark)}
+.big-btn{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;border:none;padding:15px;border-radius:14px;font-size:15.5px;font-weight:800;width:100%;box-shadow:0 6px 16px rgba(21,77,110,.35)}
+.big-btn:active{transform:scale(.98)}
+.big-btn.gray{background:#8a7a63;box-shadow:none}
+.bill-card{background:#fff;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 2px 8px rgba(138,90,43,.07);border:1px solid #F0E5D2}
+.bill-row{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:8px;color:#4a3f30}
+.bill-row.total{border-top:1px dashed #EADFCC;padding-top:10px;font-weight:800;font-size:15.5px;color:var(--blue-dark)}
+input,textarea,select{width:100%;padding:12px;border-radius:12px;border:1.5px solid #EADFCC;margin-bottom:10px;font-size:14.5px;background:#fff}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(34,116,165,.15)}
+textarea{resize:vertical;min-height:56px}
+label{font-size:12px;color:var(--sandal-dark);font-weight:700;display:block;margin-bottom:4px}
+.ord-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(138,90,43,.07)}
+.ord-top{display:flex;justify-content:space-between;margin-bottom:8px}
+.badge{padding:4px 10px;border-radius:14px;font-size:11px;font-weight:700;background:var(--blue-light);color:var(--blue-dark)}
+.badge.pend{background:#ffedd5;color:#c2410c}
+.badge.low{background:#F0E0C8;color:var(--sandal-dark)}
+.price{color:var(--blue-dark);font-weight:800}
+.empty{text-align:center;color:var(--muted);margin-top:50px;font-size:14.5px;padding:0 30px;line-height:1.6}
+.tabs{display:flex;gap:6px;margin-bottom:14px;background:#EFE3D0;padding:4px;border-radius:14px}
+.tabs button{flex:1;padding:10px 4px;border:none;border-radius:11px;background:transparent;font-size:12.5px;font-weight:700;color:var(--muted)}
+.tabs button.active{background:var(--blue);color:#fff}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(138,90,43,.07)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.stock-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.stock-btns button{border:none;border-radius:8px;padding:7px 10px;background:var(--blue-light);color:var(--blue-dark);font-size:12.5px;font-weight:700}
+.stock-btns .del{background:#fee2e2;color:#b91c1c}
+.stock-btns .edit{background:#F0E0C8;color:var(--sandal-dark)}
+.logout{background:#fee2e2;color:#b91c1c;border:none;border-radius:10px;padding:8px 14px;font-weight:700;float:right;margin-bottom:12px}
+h3.sec{margin:16px 0 10px;font-size:15px}
+.success-box{text-align:center;padding:40px 20px}
+.success-box h2{color:var(--blue-dark);margin-bottom:10px}
+
+.captcha-row{display:flex;gap:10px;align-items:stretch;margin-bottom:10px}
+.captcha-box{flex:1;position:relative;overflow:hidden;background:linear-gradient(135deg,#F3E5D3,#E8D3B4);border:2px solid #C89B6D;border-radius:12px;display:flex;align-items:center;justify-content:center;height:52px;user-select:none}
+.captcha-box span{font-family:'Courier New',monospace;font-size:24px;font-weight:900;color:#6B4A2B;letter-spacing:2px}
+.captcha-box i{position:absolute;height:1.5px;background:#6B4A2B;opacity:.45}
+.cap-refresh{width:52px;border:2px solid #C89B6D;background:#fff;border-radius:12px;font-size:20px}
+
+.sub-banner{border-radius:14px;padding:14px;margin-bottom:14px;display:flex;gap:12px;align-items:center;border:2px solid}
+.sub-banner.warn{background:#fff7ed;border-color:#fdba74}
+.sub-banner.ok{background:#f0fdf4;border-color:#86efac}
+.sub-banner .s-ico{font-size:30px}
+.sub-banner b{font-size:13.5px;display:block}
+.sub-banner small{font-size:11.5px;color:var(--muted)}
+.sub-prog{height:6px;background:#EADFCC;border-radius:4px;overflow:hidden;margin-top:6px}
+.sub-prog i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#dc2626);border-radius:4px}
+.plan-card{border:2px solid #EADFCC;border-radius:16px;padding:16px;margin-bottom:12px;background:#fff;position:relative;transition:transform .15s}
+.plan-card:hover{transform:translateY(-2px)}
+.plan-card.current{border-color:var(--blue);background:linear-gradient(135deg,#f0f8ff,#fff)}
+.plan-card .pc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.plan-card h4{font-size:16px}
+.plan-card .pc-price{font-size:18px;font-weight:900;color:var(--blue-dark)}
+.plan-card .pc-price small{font-size:11px;color:var(--muted);font-weight:600}
+.plan-card ul{list-style:none;margin:8px 0 12px}
+.plan-card li{font-size:12.5px;padding:3px 0;color:#4a3f30}
+.plan-card li::before{content:"✓ ";color:var(--blue-dark);font-weight:800}
+.plan-btn{width:100%;padding:11px;border:none;border-radius:12px;font-weight:800;font-size:13.5px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff}
+.plan-btn.gold{background:linear-gradient(135deg,#f5b942,#b8860b)}
+.plan-btn.silver{background:linear-gradient(135deg,#94a3b8,#475569)}
+.plan-btn.active-plan{background:#e2e8f0;color:var(--muted)}
+.pop-badge{position:absolute;top:-10px;right:14px;background:linear-gradient(135deg,#f5b942,#b8860b);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:10px}
+.demo-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
+
+/* 🆕 NOTIFICATIONS */
+.notif-item{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(138,90,43,.07);display:flex;gap:12px;align-items:flex-start}
+.notif-item.unread{border-left:4px solid var(--blue);background:linear-gradient(135deg,#f0f8ff,#fff)}
+.notif-ico{font-size:24px;width:44px;height:44px;background:var(--sandal-light);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-item h4{font-size:13.5px;margin-bottom:3px}
+.notif-item p{font-size:12px;color:#4a3f30;line-height:1.4}
+.notif-item small{color:var(--muted);font-size:10.5px}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- ============ HOME ============ -->
+<div id="homeScreen">
+  <div class="top">
+    <div class="top-row1">
+      <div>
+        <div class="t1">LocalShop — delivery in</div>
+        <div class="delivery"><h1>30-40 minutes</h1><span class="chip">🛵 nearby</span></div>
+        <div class="loc">📍 <span id="locText">Location edukudhu...</span>
+          <button class="loc-chip" id="locChip" onclick="requestLocation()">🔄 Refresh</button>
+        </div>
+      </div>
+      <div class="top-icons">
+        <button class="icn-btn" onclick="goNotifs()" title="Notifications">🔔<span class="n-badge hidden" id="notifBadge">0</span></button>
+        <button class="icn-btn" onclick="openOwnerLogin()" title="Owner">🏪</button>
+        <button class="icn-btn" onclick="openAccount()" title="Account">👤</button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <span class="mag">🔍</span>
+      <input type="text" id="searchBox" placeholder='Search "milk"' oninput="renderFeed()">
+    </div>
+    <div class="cats" id="catRow"></div>
+  </div>
+
+  <div class="body-in">
+    <div class="banner" id="promoBanner">
+      <span class="b-side b-l">🥦</span>
+      <div class="b-tag">WEEKEND</div>
+      <h2>FRESH <em>GROCERY</em> READY</h2>
+      <span class="b-side b-r">🛒</span>
+    </div>
+    <h3 class="sec-title" id="feedTitle">⚡ Fast Moving Items</h3>
+    <div class="feed" id="feed"></div>
+  </div>
+
+  <div class="free-del" id="freeDelBar">
+    <span class="scoot">🛵</span>
+    <div style="flex:1">
+      <b id="fdTitle">Get FREE delivery</b>
+      <small id="fdSub">Add products worth ₹199 more</small>
+      <div class="prog"><i id="fdProg" style="width:0%"></i></div>
+    </div>
+    <button class="fd-x" onclick="document.getElementById('freeDelBar').style.display='none'">✕</button>
+  </div>
+
+  <button class="cart-bar hidden" id="cartBar" onclick="openCart()">
+    <span class="c-emos" id="cartEmos"></span>
+    <span><b id="cartBarTitle">View cart</b><small id="cartBarSub">0 items</small></span>
+    <span class="arr">➜</span>
+  </button>
+
+  <div class="bottom-nav">
+    <button class="bn active" onclick="goHome()"><span class="bn-ico">🏠</span>Home</button>
+    <button class="bn" onclick="goMyOrders()"><span class="bn-ico">📦</span>My Orders</button>
+    <button class="bn" onclick="openCart()"><span class="bn-ico">🛒</span>Cart</button>
+    <button class="bn" onclick="openAccount()"><span class="bn-ico">👤</span>Account</button>
+  </div>
+</div>
+
+<!-- 🆕 NOTIFICATIONS SCREEN -->
+<div id="notifsScreen" class="hidden">
+  <div class="screen-head"><button class="bk" onclick="goHome()">←</button><h1>🔔 Notifications</h1></div>
+  <div class="wrap" id="notifList"></div>
+</div>
+
+<!-- ============ CART ============ -->
+<div id="cartScreen" class="hidden">
+  <div class="screen-head"><button class="bk" onclick="goHome()">←</button><h1>🛒 My Cart</h1></div>
+  <div class="wrap" id="cartBody"></div>
+</div>
+
+<!-- ============ ACCOUNT ============ -->
+<div id="accountScreen" class="hidden">
+  <div class="screen-head"><button class="bk" onclick="goHome()">←</button><h1>👤 My Account</h1></div>
+  <div class="wrap" style="max-width:420px">
+    <label>Name</label><input type="text" id="accName" placeholder="Unga name">
+    <label>Phone</label><input type="tel" id="accPhone" placeholder="10 digit mobile" maxlength="10">
+    <label>Delivery Address</label><textarea id="accAddress" placeholder="Door no, street, area"></textarea>
+    <button class="big-btn" onclick="saveAccount()">💾 Save & Continue</button>
+  </div>
+</div>
+
+<!-- ============ MY ORDERS ============ -->
+<div id="myOrdersScreen" class="hidden">
+  <div class="screen-head"><button class="bk" onclick="goHome()">←</button><h1>📦 My Orders</h1></div>
+  <div class="wrap" id="myOrdersList"></div>
+</div>
+
+<!-- ============ SUCCESS ============ -->
+<div id="successScreen" class="hidden">
+  <div class="success-box">
+    <div style="font-size:60px">🎉</div>
+    <h2>Order Placed!</h2>
+    <p>Order ID: <strong id="successId"></strong></p>
+    <p style="margin:10px 0;color:#777;font-size:13px">🛵 Estimated delivery: <strong>30-40 minutes</strong></p>
+    <button class="big-btn" onclick="goMyOrders()">📦 My Orders</button><br><br>
+    <button class="big-btn gray" onclick="goHome()">🏠 Home</button>
+  </div>
+</div>
+
+<!-- ============ OWNER LOGIN ============ -->
+<div id="ownerLoginScreen" class="hidden">
+  <div class="screen-head"><button class="bk" onclick="goHome()">←</button><h1>🔑 Owner Login</h1></div>
+  <div class="wrap" style="max-width:340px;margin-top:24px">
+    <label>Shop name</label>
+    <input type="text" id="loginShopName" placeholder="Shop name" autocomplete="off">
+    <label>Password</label>
+    <input type="password" id="loginPassword" placeholder="Password">
+    <label>Security check — Captcha</label>
+    <div class="captcha-row">
+      <div class="captcha-box" id="captchaBox"></div>
+      <button class="cap-refresh" onclick="genCaptcha()">↻</button>
+    </div>
+    <input type="text" id="captchaInput" placeholder="Code type pannu" autocomplete="off" maxlength="5">
+    <p id="loginError" style="color:#b91c1c;font-size:13px;margin-bottom:8px"></p>
+    <button class="big-btn" onclick="ownerLogin()">Login</button>
+    <p style="text-align:center;color:#7c8a93;font-size:12.5px;margin-top:12px">Demo: Meenakshi Store / 1234 • Kumar Stationery / 1234 • Anbu Fruit Shop / 1234</p>
+  </div>
+</div>
+
+<!-- ============ OWNER DASHBOARD ============ -->
+<div id="ownerScreen" class="hidden">
+  <div class="screen-head"><h1 id="ownerWelcome" style="font-size:17px"></h1></div>
+  <div class="wrap">
+    <button class="logout" onclick="ownerLogout()">Logout</button>
+    <div style="clear:both"></div>
+    <div class="tabs">
+      <button id="tabProducts" class="active" onclick="ownerTab('products')">📦 Products</button>
+      <button id="tabOrders" onclick="ownerTab('orders')">🧾 Orders</button>
+      <button id="tabSub" onclick="ownerTab('sub')">💎 Plan</button>
+    </div>
+    <div id="subBannerBox"></div>
+    <div id="ownerProductsTab">
+      <div class="card">
+        <h3 class="sec" style="margin-top:0">➕ New Product</h3>
+        <label>Product name</label><input type="text" id="prodName" placeholder="Product name">
+        <label>Price (₹)</label><input type="number" id="prodPrice" placeholder="Price (₹)" min="1">
+        <label>Stock quantity</label><input type="number" id="prodQty" placeholder="Stock quantity" min="0">
+        <label>Category</label>
+        <select id="prodCat">
+          <option value="dairy">🥛 Milk & Dairy</option>
+          <option value="snacks">🍿 Snacks</option>
+          <option value="chocolate">🍫 Chocolates</option>
+          <option value="veg">🥕 Vegetables</option>
+          <option value="fruits">🍎 Fruits</option>
+          <option value="staples">🍚 Rice & Staples</option>
+          <option value="care">🧼 Personal Care</option>
+          <option value="stationery">📚 Stationery</option>
+          <option value="plastic">🪣 Plastic & Household</option>
+        </select>
+        <label>Photo URL (optional — illa-na emoji)</label>
+        <input type="text" id="prodImg" placeholder="images/milk.jpg illa https://...">
+        <button class="big-btn" onclick="addProduct()" style="margin-top:6px">Add Product</button>
+      </div>
+      <h3 class="sec">📦 Unga Products</h3>
+      <div id="ownerProducts"></div>
+    </div>
+    <div id="ownerOrdersTab" class="hidden"><div id="ownerOrdersList"></div></div>
+    <div id="ownerSubTab" class="hidden"><div id="subPlansBox"></div></div>
+  </div>
+</div>
+
+</div><!-- /phone -->
+
+<script>
+// ===== 💎 PLANS =====
+var PLANS = {
+  none:    { name:"Free Trial", price:0,   limit:5, ico:"🆓" },
+  basic:   { name:"🥉 Basic",   price:199, limit:Infinity, ico:"🥉",
+             features:["Unlimited orders","Standard listing","Order alerts"] },
+  premium: { name:"🥈 Premium", price:499, limit:Infinity, ico:"🥈",
+             features:["Unlimited orders","⭐ Priority listing","⭐ Premium badge","Order alerts"] },
+  elite:   { name:"🥇 Elite",   price:800, limit:Infinity, ico:"🥇",
+             features:["Premium ella benefits-um","👑 Featured badge","Top-most position","Zero commission (future)"] }
+};
+var PLAN_RANK = { elite:4, premium:3, basic:2, none:1 };
+
+// ===== CATEGORIES (🍎 Fruits added!) =====
+var CATS = [
+  { id:"all", name:"All", ico:"🛍️", img:"https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&q=80" },
+  { id:"dairy", name:"Milk", ico:"🥛", img:"https://images.unsplash.com/photo-1563636619-e9143da7973b?w=100&q=80" },
+  { id:"fruits", name:"Fruits", ico:"🍎", img:"https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=100&q=80" },
+  { id:"veg", name:"Veggies", ico:"🥕", img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&q=80" },
+  { id:"snacks", name:"Snacks", ico:"🍿", img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=100&q=80" },
+  { id:"chocolate", name:"Chocolates", ico:"🍫", img:"https://images.unsplash.com/photo-1511381939415-e44015466834?w=100&q=80" },
+  { id:"staples", name:"Rice", ico:"🍚", img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=100&q=80" },
+  { id:"care", name:"Care", ico:"🧼", img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=100&q=80" },
+  { id:"stationery", name:"Stationery", ico:"📚", img:"https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?w=100&q=80" },
+  { id:"plastic", name:"Plastic", ico:"🪣", img:"https://images.unsplash.com/photo-1585421514738-01798e348b17?w=100&q=80" }
+];
+var CAT_NAMES = { dairy:"🥛 Milk & Dairy", fruits:"🍎 Fruits", snacks:"🍿 Snacks", chocolate:"🍫 Chocolates", veg:"🥕 Vegetables", staples:"🍚 Rice & Staples", care:"🧼 Personal Care", stationery:"📚 Stationery", plastic:"🪣 Plastic & Household" };
+var CAT_EMOJI = { dairy:"🥛", fruits:"🍎", snacks:"🍿", chocolate:"🍫", veg:"🥕", staples:"🍚", care:"🧼", stationery:"📚", plastic:"🪣" };
+
+// ===== SHOPS (🍎 fruit shop added!) =====
+var shops = [
+  { name:"Meenakshi Store", password:"1234", lat:13.0827, lng:80.2707, plan:"premium", ordersUsed:0,
+    products:[
+      { name:"Amul Butter 100g", price:58, mrp:62, stock:12, cat:"dairy", emoji:"🧈", img:"https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&q=80" },
+      { name:"Ponni Rice 1kg", price:75, mrp:85, stock:50, cat:"staples", emoji:"🍚", img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&q=80" },
+      { name:"Sunflower Oil 1L", price:140, mrp:160, stock:15, cat:"staples", emoji:"🛢️", img:"https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&q=80" },
+      { name:"Dairy Milk Silk", price:80, mrp:90, stock:25, cat:"chocolate", emoji:"🍫", img:"https://images.unsplash.com/photo-1511381939415-e44015466834?w=300&q=80" },
+      { name:"Colgate Toothpaste 100g", price:55, mrp:60, stock:20, cat:"care", emoji:"🪥", img:"https://images.unsplash.com/photo-1559591937-abc3a5d4d7e5?w=300&q=80" },
+      { name:"Onion 1kg", price:32, mrp:40, stock:40, cat:"veg", emoji:"🧅", img:"https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=300&q=80" }
+    ]},
+  { name:"Maghisha Store", password:"1234", lat:13.0850, lng:80.2730, plan:"none", ordersUsed:0,
+    products:[
+      { name:"Aavin Milk 500ml", price:24, mrp:26, stock:30, cat:"dairy", emoji:"🥛", img:"https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80" },
+      { name:"Lays Chips", price:20, mrp:20, stock:35, cat:"snacks", emoji:"🍟", img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300&q=80" },
+      { name:"KitKat", price:30, mrp:35, stock:20, cat:"chocolate", emoji:"🍫", img:"https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=300&q=80" },
+      { name:"Ponni Rice 1kg", price:72, mrp:85, stock:30, cat:"staples", emoji:"🍚", img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&q=80" },
+      { name:"Carrot 500g", price:25, mrp:30, stock:22, cat:"veg", emoji:"🥕", img:"https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=300&q=80" },
+      { name:"Oral-B Toothbrush", price:38, mrp:45, stock:0, cat:"care", emoji:"🪥", img:"https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=300&q=80" }
+    ]},
+  { name:"Anbu Fruit Shop", password:"1234", lat:13.0860, lng:80.2750, plan:"none", ordersUsed:0,
+    products:[
+      { name:"Banana (Dozen)", price:45, mrp:55, stock:30, cat:"fruits", emoji:"🍌", img:"https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=80" },
+      { name:"Apple Shimla 1kg", price:180, mrp:220, stock:20, cat:"fruits", emoji:"🍎", img:"https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300&q=80" },
+      { name:"Orange 1kg", price:90, mrp:110, stock:25, cat:"fruits", emoji:"🍊", img:"https://images.unsplash.com/photo-1547514701-42782101795e?w=300&q=80" },
+      { name:"Watermelon Big", price:60, mrp:75, stock:15, cat:"fruits", emoji:"🍉", img:"https://images.unsplash.com/photo-1589984662646-e7b2e4962f0f?w=300&q=80" },
+      { name:"Grapes Black 500g", price:70, mrp:85, stock:18, cat:"fruits", emoji:"🍇", img:"https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=300&q=80" },
+      { name:"Pomegranate 1kg", price:150, mrp:180, stock:12, cat:"fruits", emoji:"🍎", img:"https://images.unsplash.com/photo-1547496502-affa22d38842?w=300&q=80" }
+    ]},
+  { name:"Anbu Super Market", password:"1234", lat:13.0900, lng:80.2800, plan:"none", ordersUsed:0,
+    products:[
+      { name:"Curd 200g", price:22, mrp:25, stock:18, cat:"dairy", emoji:"🍶", img:"https://images.unsplash.com/photo-1571212515416-fef01fc43637?w=300&q=80" },
+      { name:"Parle-G Biscuits", price:10, mrp:10, stock:60, cat:"snacks", emoji:"🍪", img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300&q=80" },
+      { name:"Tomato 1kg", price:28, mrp:35, stock:35, cat:"veg", emoji:"🍅", img:"https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300&q=80" },
+      { name:"Tata Salt 1kg", price:28, mrp:30, stock:40, cat:"staples", emoji:"🧂", img:"https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=300&q=80" },
+      { name:"Colgate Toothpaste 100g", price:58, mrp:60, stock:30, cat:"care", emoji:"🪥", img:"https://images.unsplash.com/photo-1559591937-abc3a5d4d7e5?w=300&q=80" }
+    ]},
+  { name:"Sathya Kadai", password:"1234", lat:13.0880, lng:80.2760, plan:"basic", ordersUsed:0,
+    products:[
+      { name:"Aavin Milk 500ml", price:24, mrp:26, stock:20, cat:"dairy", emoji:"🥛", img:"https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80" },
+      { name:"5 Star chocolate", price:25, mrp:30, stock:26, cat:"chocolate", emoji:"🍫", img:"https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=300&q=80" },
+      { name:"Parle-G Biscuits", price:10, mrp:10, stock:45, cat:"snacks", emoji:"🍪", img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300&q=80" },
+      { name:"Lux Soap", price:28, mrp:32, stock:18, cat:"care", emoji:"🧼", img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=300&q=80" }
+    ]},
+  { name:"Kumar Stationery", password:"1234", lat:13.0865, lng:80.2745, plan:"none", ordersUsed:0,
+    products:[
+      { name:"Classmate Notebook 200pg", price:60, mrp:70, stock:40, cat:"stationery", emoji:"📓", img:"https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=300&q=80" },
+      { name:"Reynolds Pen Pack (5)", price:35, mrp:40, stock:50, cat:"stationery", emoji:"🖊️", img:"https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=300&q=80" },
+      { name:"Apsara Pencils Pack", price:30, mrp:35, stock:45, cat:"stationery", emoji:"✏️", img:"https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=300&q=80" },
+      { name:"Camlin Geometry Box", price:120, mrp:140, stock:15, cat:"stationery", emoji:"📐", img:"https://images.unsplash.com/photo-1608514775474-8e4bfced9d87?w=300&q=80" },
+      { name:"Fevistick Glue", price:25, mrp:30, stock:35, cat:"stationery", emoji:"🎀", img:"https://images.unsplash.com/photo-1603204077167-2fa0397f591b?w=300&q=80" }
+    ]},
+  { name:"Sri Amman Plastic Mart", password:"1234", lat:13.0875, lng:80.2770, plan:"none", ordersUsed:0,
+    products:[
+      { name:"Plastic Bucket 15L", price:180, mrp:220, stock:25, cat:"plastic", emoji:"🪣", img:"https://images.unsplash.com/photo-1585421514738-01798e348b17?w=300&q=80" },
+      { name:"Fridge Container Set (3)", price:250, mrp:300, stock:20, cat:"plastic", emoji:"🍱", img:"https://images.unsplash.com/photo-1584990347449-a2d4c2c9cf83?w=300&q=80" },
+      { name:"Water Bottle 1L", price:95, mrp:110, stock:35, cat:"plastic", emoji:"🍶", img:"https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=300&q=80" },
+      { name:"Flower Pot Medium", price:60, mrp:75, stock:40, cat:"plastic", emoji:"🪴", img:"https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=300&q=80" }
+    ]}
+];
+
+var orders = [];
+var account = null;
+var cart = [];
+var currentOwner = null;
+var activeCat = "all";
+var pendingAdd = null;
+var captchaCode = "";
+// 🆕 NOTIFICATIONS
+var notifs = [];
+var unreadCount = 0;
+
+// ===== LOCATION =====
+var DEMO_LAT = 13.0840, DEMO_LNG = 80.2720;
+var userLat = DEMO_LAT, userLng = DEMO_LNG;
+var locationMode = "asking";
+
+// ===== HELPERS =====
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function goTo(id){
+  var scr = document.querySelectorAll(".phone > div");
+  for (var i=0;i<scr.length;i++) scr[i].classList.add("hidden");
+  document.getElementById(id).classList.remove("hidden");
+  window.scrollTo(0,0);
+  if (id==="ownerLoginScreen") genCaptcha();
+}
+function goHome(){ goTo("homeScreen"); renderFeed(); updateCartBar(); }
+function goMyOrders(){ renderMyOrders(); goTo("myOrdersScreen"); }
+function openOwnerLogin(){ goTo("ownerLoginScreen"); }
+function flatProducts(){
+  var out = [];
+  for (var i=0;i<shops.length;i++)
+    for (var j=0;j<shops[i].products.length;j++)
+      out.push({ si:i, pi:j, p:shops[i].products[j], shop:shops[i] });
+  return out;
+}
+function discount(p){ return p.mrp && p.mrp > p.price ? Math.round((p.mrp-p.price)/p.mrp*100) : 0; }
+function imgTag(p){
+  if (p.img) return "<img src='"+esc(p.img)+"' alt='' onerror=\"this.remove()\">";
+  return "";
+}
+function shopPaused(shop){ return shop.plan === "none" && shop.ordersUsed >= PLANS.none.limit; }
+function getDistance(lat1, lng1, lat2, lng2){
+  var R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function shopDist(shop){ return getDistance(userLat, userLng, shop.lat, shop.lng); }
+function formatDist(km){ return km<1 ? Math.round(km*1000)+" m" : km.toFixed(1)+" km"; }
+function deliveryTime(km){
+  if (km < 1) return "20-30 min";
+  if (km < 1.5) return "25-35 min";
+  return "30-40 min";
+}
+
+// ===== 🆕 NOTIFICATION SYSTEM =====
+function addNotif(ico, title, body){
+  notifs.unshift({ ico:ico, title:title, body:body, time:new Date().toLocaleString(), read:false });
+  unreadCount++;
+  updateNotifBadge();
+}
+function updateNotifBadge(){
+  var b = document.getElementById("notifBadge");
+  if (unreadCount > 0){
+    b.classList.remove("hidden");
+    b.textContent = unreadCount > 9 ? "9+" : unreadCount;
+  } else {
+    b.classList.add("hidden");
+  }
+}
+function goNotifs(){
+  renderNotifs();
+  unreadCount = 0;
+  updateNotifBadge();
+  goTo("notifsScreen");
+}
+function renderNotifs(){
+  var box = document.getElementById("notifList");
+  if (notifs.length === 0){
+    box.innerHTML = "<p class='empty'>🔔 Innum notification illa<br><small>Order podum bodhu, delivery aagum bodhu inga message varum!</small></p>";
+    return;
+  }
+  box.innerHTML = "";
+  notifs.forEach(function(n){
+    var d = document.createElement("div");
+    d.className = "notif-item" + (n.read ? "" : " unread");
+    d.innerHTML = "<div class='notif-ico'>"+n.ico+"</div>"+
+      "<div><h4>"+esc(n.title)+"</h4><p>"+esc(n.body)+"</p><small>🕐 "+n.time+"</small></div>";
+    box.appendChild(d);
+  });
+}
+
+// ===== GPS LOCATION =====
+function requestLocation(){
+  var chip = document.getElementById("locChip");
+  chip.textContent = "⏳ ...";
+  if (!navigator.geolocation){ locationMode = "demo"; updateLocUI(); renderFeed(); return; }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    var nearest = Infinity;
+    shops.forEach(function(s){ nearest = Math.min(nearest, shopDist(s)); });
+    locationMode = (nearest <= 2) ? "live" : "live-empty";
+    updateLocUI(); renderFeed();
+  }, function(){
+    locationMode = "demo";
+    userLat = DEMO_LAT; userLng = DEMO_LNG;
+    updateLocUI(); renderFeed();
+  }, { enableHighAccuracy:true, timeout:10000, maximumAge:60000 });
+}
+function useDemoLocation(){
+  locationMode = "demo";
+  userLat = DEMO_LAT; userLng = DEMO_LNG;
+  updateLocUI(); renderFeed();
+}
+function updateLocUI(){
+  var t = document.getElementById("locText");
+  var chip = document.getElementById("locChip");
+  if (locationMode === "live"){
+    t.textContent = "Live location ✓ (2km ulla shops)";
+    chip.textContent = "📍 LIVE"; chip.className = "loc-chip live";
+  } else if (locationMode === "live-empty"){
+    t.textContent = "Live location ✓ (aana nearby shop illa)";
+    chip.textContent = "📍 LIVE"; chip.className = "loc-chip live";
+  } else if (locationMode === "demo"){
+    t.textContent = "Demo location, Chennai";
+    chip.textContent = "🔄 GPS try pannu"; chip.className = "loc-chip";
+  } else {
+    t.textContent = "Location edukudhu... Allow pannunga";
+    chip.textContent = "⏳ ..."; chip.className = "loc-chip";
+  }
+}
+
+// ===== CAPTCHA =====
+function genCaptcha(){
+  var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  captchaCode = "";
+  for (var i=0;i<5;i++) captchaCode += chars.charAt(Math.floor(Math.random()*chars.length));
+  var box = document.getElementById("captchaBox");
+  box.innerHTML = "";
+  for (var i=0;i<captchaCode.length;i++){
+    var s = document.createElement("span");
+    s.textContent = captchaCode.charAt(i);
+    s.style.display = "inline-block";
+    s.style.transform = "rotate("+((Math.random()*36)-18).toFixed(0)+"deg)";
+    s.style.margin = "0 3px";
+    box.appendChild(s);
+  }
+  for (var i=0;i<4;i++){
+    var l = document.createElement("i");
+    l.style.left = (Math.random()*70)+"%";
+    l.style.top = (Math.random()*80)+"%";
+    l.style.width = (25+Math.random()*25)+"px";
+    l.style.transform = "rotate("+((Math.random()*60)-30).toFixed(0)+"deg)";
+    box.appendChild(l);
+  }
+}
+
+// ===== CATEGORY ROW =====
+function renderCats(){
+  var box = document.getElementById("catRow");
+  box.innerHTML = "";
+  CATS.forEach(function(c){
+    var b = document.createElement("button");
+    b.className = "cat-item" + (activeCat===c.id ? " active" : "");
+    b.innerHTML = "<span class='c-ico'>"+(c.img?"<img src='"+c.img+"' onerror=\"this.replaceWith('"+c.ico+"')\">":c.ico)+"</span>"+c.name;
+    b.onclick = function(){
+      activeCat = c.id;
+      document.getElementById("searchBox").value = "";
+      renderCats(); renderFeed();
+    };
+    box.appendChild(b);
+  });
+}
+
+// ===== FEED =====
+function renderFeed(){
+  var term = document.getElementById("searchBox").value.trim().toLowerCase();
+  var box = document.getElementById("feed");
+  var title = document.getElementById("feedTitle");
+  var banner = document.getElementById("promoBanner");
+  var items = flatProducts().filter(function(it){
+    it.d = shopDist(it.shop);
+    var okDist = it.d <= 2;
+    var okCat = activeCat==="all" || it.p.cat===activeCat;
+    var okTerm = !term || it.p.name.toLowerCase().indexOf(term)!==-1;
+    return okDist && okCat && okTerm;
+  });
+  items.sort(function(a,b){
+    if (PLAN_RANK[a.shop.plan] !== PLAN_RANK[b.shop.plan])
+      return PLAN_RANK[b.shop.plan] - PLAN_RANK[a.shop.plan];
+    if ((a.p.stock>0)!==(b.p.stock>0)) return a.p.stock>0 ? -1 : 1;
+    return a.d - b.d;
+  });
+  if (term){ title.textContent = "🔍 Results for \""+term+"\""; banner.classList.add("hidden"); }
+  else {
+    var c = CATS.filter(function(x){return x.id===activeCat;})[0];
+    title.textContent = (activeCat==="all" ? "⚡ Fast Moving Items" : c.ico+" "+c.name+" items");
+    banner.classList.remove("hidden");
+  }
+  box.innerHTML = "";
+  if (items.length===0){
+    var isFar = (locationMode==="live-empty");
+    box.innerHTML = "<div class='empty' style='grid-column:1/-1'>"+
+      (isFar
+        ? "😔 Unga area-la (2km) innum shops register aagala!<br><small>Demo shops Chennai-la irukku</small><br>"
+        : "😔 Indha product nearby shops-la illa<br><small>Veru search panni paaru!</small><br>")+
+      (isFar ? "<button class='empty-btn' onclick='useDemoLocation()'>🧪 Demo shops kaattu</button>" : "")+
+      "</div>";
+    return;
+  }
+  items.forEach(function(it){
+    var inStock = it.p.stock > 0;
+    var paused = shopPaused(it.shop);
+    var inCart = cartQty(it.si, it.pi);
+    var off = discount(it.p);
+    var planBadge = "";
+    if (it.shop.plan==="premium") planBadge = "<span class='p-plan'>⭐ PREMIUM</span>";
+    if (it.shop.plan==="elite") planBadge = "<span class='p-plan elite'>👑 ELITE</span>";
+    var card = document.createElement("div");
+    card.className = "p-card" + (paused ? " paused" : "");
+    card.innerHTML =
+      "<div class='p-img'>"+it.p.emoji+imgTag(it.p)+planBadge+"<span class='fav'>♡</span></div>"+
+      "<div class='qty-row'><small>"+(paused? "⏸️ Shop paused" : (inStock? it.p.stock+" left" : "Out of stock"))+"</small>"+
+      (inStock && !paused ? (inCart>0
+        ? "<span class='stepper'><button onclick='chQty("+it.si+","+it.pi+",-1)'>−</button><b>"+inCart+"</b><button onclick='chQty("+it.si+","+it.pi+",1)'>+</button></span>"
+        : "<button class='add-btn' onclick='addToCart("+it.si+","+it.pi+")'>+</button>")
+        : (paused ? "<span class='pause-tag'>⏸️ Paused</span>" : ""))+
+      "</div>"+
+      "<div class='price-row'><span class='p-price'>₹"+it.p.price+"</span>"+
+      (it.p.mrp>it.p.price ? "<span class='p-mrp'>₹"+it.p.mrp+"</span>" : "")+"</div>"+
+      "<div class='p-name'>"+esc(it.p.name)+"</div>"+
+      "<div class='p-shop'>📍 "+esc(it.shop.name)+"</div>"+
+      "<span class='dist-tag'>📏 "+formatDist(it.d)+"</span> "+
+      "<span class='time-tag'>🛵 "+deliveryTime(it.d)+"</span>"+
+      (off>0 ? "<span class='off-tag'>"+off+"% OFF</span>" : "");
+    box.appendChild(card);
+  });
+}
+function cartQty(si,pi){
+  for (var i=0;i<cart.length;i++) if (cart[i].si===si && cart[i].pi===pi) return cart[i].qty;
+  return 0;
+}
+
+// ===== CART =====
+function addToCart(si,pi){
+  if (!account){ pendingAdd = {si:si,pi:pi}; openAccount(); return; }
+  var shop = shops[si], p = shop.products[pi];
+  if (shopPaused(shop)){ alert("⏸️ Indha shop ippo paused-ah irukku!\n(Free limit mudinchiduchu — owner subscribe pannanum)"); return; }
+  if (p.stock < 1){ alert("Out of stock!"); return; }
+  var ex = null;
+  for (var i=0;i<cart.length;i++) if (cart[i].si===si && cart[i].pi===pi) ex = cart[i];
+  if (ex){ if (ex.qty < p.stock) ex.qty++; else { alert("Stock mattum "+p.stock+" irukku!"); return; } }
+  else cart.push({ si:si, pi:pi, qty:1 });
+  renderFeed(); updateCartBar();
+}
+function chQty(si,pi,d){
+  for (var i=0;i<cart.length;i++){
+    if (cart[i].si===si && cart[i].pi===pi){
+      cart[i].qty += d;
+      var p = shops[si].products[pi];
+      if (cart[i].qty > p.stock){ cart[i].qty = p.stock; alert("Stock mattum "+p.stock+" irukku!"); }
+      if (cart[i].qty <= 0) cart.splice(i,1);
+      break;
+    }
+  }
+  renderFeed(); updateCartBar();
+  if (!document.getElementById("cartScreen").classList.contains("hidden")) renderCart();
+}
+function cartCount(){ var n=0; cart.forEach(function(c){n+=c.qty;}); return n; }
+function cartTotal(){ var t=0; cart.forEach(function(c){ t += shops[c.si].products[c.pi].price * c.qty; }); return t; }
+function updateCartBar(){
+  var bar = document.getElementById("cartBar");
+  var n = cartCount(), t = cartTotal();
+  if (n===0){ bar.classList.add("hidden"); }
+  else {
+    bar.classList.remove("hidden");
+    document.getElementById("cartBarTitle").textContent = n+" item"+(n>1?"s":"")+" • ₹"+t;
+    document.getElementById("cartBarSub").textContent = "View cart ➜";
+    var emos = document.getElementById("cartEmos");
+    emos.innerHTML = cart.slice(0,3).map(function(c){
+      return "<span>"+shops[c.si].products[c.pi].emoji+"</span>";
+    }).join("");
+  }
+  var free = 199;
+  if (n>0){
+    document.getElementById("fdTitle").textContent = t>=free ? "🎉 You got FREE delivery!" : "Get FREE delivery";
+    document.getElementById("fdSub").textContent = t>=free ? "Super! Delivery charges illa 😎" : "Add products worth ₹"+(free-t)+" more";
+    document.getElementById("fdProg").style.width = Math.min(100, t/free*100)+"%";
+  }
+}
+function openCart(){ renderCart(); goTo("cartScreen"); }
+function renderCart(){
+  var box = document.getElementById("cartBody");
+  box.innerHTML = "";
+  if (cart.length===0){
+    box.innerHTML = "<p class='empty'>🛒 Cart empty-ah irukku<br><br>Home-ku poi + button click pannu! 👆</p><br><button class='big-btn gray' onclick='goHome()'>🏠 Home-ku po</button>";
+    return;
+  }
+  cart.forEach(function(c,idx){
+    var p = shops[c.si].products[c.pi];
+    var d = document.createElement("div");
+    d.className = "cart-item";
+    d.innerHTML = "<div class='ci-emo'>"+p.emoji+imgTag(p)+"</div>"+
+      "<div class='ci-info'><h4>"+esc(p.name)+"</h4><small>📍 "+esc(shops[c.si].name)+"</small>"+
+      "<div class='price-row' style='margin-top:4px'><span class='ci-price'>₹"+p.price+"</span></div></div>"+
+      "<div class='ci-right'><span class='stepper'><button onclick='chQty("+c.si+","+c.pi+",-1)'>−</button><b>"+c.qty+"</b><button onclick='chQty("+c.si+","+c.pi+",1)'>+</button></span>"+
+      "<div class='ci-price' style='margin-top:6px'>₹"+(p.price*c.qty)+"</div></div>";
+    box.appendChild(d);
+  });
+  var t = cartTotal(), del = t>=199 ? 0 : 25;
+  var bill = document.createElement("div");
+  bill.className = "bill-card";
+  bill.innerHTML = "<div class='bill-row'><span>Item total</span><span>₹"+t+"</span></div>"+
+    "<div class='bill-row'><span>Delivery fee "+(del===0?"<b style='color:#2274A5'>(FREE! 🎉)</b>":"")+"</span><span>"+(del===0?"₹0":"₹"+del)+"</span></div>"+
+    "<div class='bill-row'><span>🛵 Delivery time</span><span>30-40 minutes</span></div>"+
+    "<div class='bill-row total'><span>To pay</span><span>₹"+(t+del)+"</span></div>";
+  box.appendChild(bill);
+  var addr = document.createElement("div");
+  addr.innerHTML = "<label>Delivery Address</label><textarea id='cartAddr'>"+(account?esc(account.address):"")+"</textarea>"+
+    "<button class='big-btn' onclick='placeCartOrder("+t+","+(t+del)+")'>✅ Place Order • ₹"+(t+del)+"</button>";
+  box.appendChild(addr);
+}
+function placeCartOrder(t, grand){
+  if (!account){ openAccount(); return; }
+  var addr = document.getElementById("cartAddr").value.trim();
+  if (!addr){ alert("Address podunga!"); return; }
+  for (var i=0;i<cart.length;i++){
+    var shop = shops[cart[i].si];
+    var p = shop.products[cart[i].pi];
+    if (shopPaused(shop)){ alert("⏸️ "+shop.name+" paused — order mudiyadhu!"); return; }
+    if (cart[i].qty > p.stock){ alert(p.name+" — stock mattum "+p.stock+" irukku!"); return; }
+  }
+  var byShop = {};
+  cart.forEach(function(c){
+    var s = shops[c.si].name;
+    if (!byShop[s]) byShop[s] = [];
+    byShop[s].push({ name:shops[c.si].products[c.pi].name, price:shops[c.si].products[c.pi].price, qty:c.qty });
+    shops[c.si].products[c.pi].stock -= c.qty;
+  });
+  var firstId = "";
+  Object.keys(byShop).forEach(function(sName){
+    var items = byShop[sName];
+    var sub = items.reduce(function(a,x){ return a + x.price*x.qty; }, 0);
+    var pendingO = null;
+    for (var i=0;i<orders.length;i++){
+      if (orders[i].shop===sName && orders[i].status==="Pending" && orders[i].cust.phone===account.phone){
+        pendingO = orders[i]; break;
+      }
+    }
+    if (pendingO && confirm("📦 "+sName+"-ku PENDING order irukku!\n\n"+pendingO.id+"\n\nIndha pudhu items antha order-oda serthu anupalaama?\n\nOK = Serthu vidu 🛵\nCancel = Pudhu order")){
+      pendingO.items = pendingO.items.concat(items);
+      pendingO.total += sub;
+      firstId = pendingO.id;
+      return;
+    }
+    for (var i=0;i<shops.length;i++){
+      if (shops[i].name===sName && shops[i].plan==="none") shops[i].ordersUsed++;
+    }
+    var oid = "ORD"+Date.now().toString().slice(-6);
+    if (!firstId) firstId = oid;
+    orders.push({ id:oid, shop:sName, items:items, total:sub,
+      cust:{ name:account.name, phone:account.phone, addr:addr },
+      time:new Date().toLocaleString(), status:"Pending" });
+    // 🆕 NOTIFICATION: Order placed!
+    addNotif("🛒", "Order placed! "+oid,
+      sName+"-la "+items.length+" item"+(items.length>1?"s":"")+" order aachu! 🛵 30-40 min la varum.");
+  });
+  cart = [];
+  updateCartBar();
+  document.getElementById("successId").textContent = firstId;
+  goTo("successScreen");
+}
+
+// ===== ACCOUNT =====
+function openAccount(){
+  document.getElementById("accName").value = account ? account.name : "";
+  document.getElementById("accPhone").value = account ? account.phone : "";
+  document.getElementById("accAddress").value = account ? account.address : "";
+  goTo("accountScreen");
+}
+function saveAccount(){
+  var name = document.getElementById("accName").value.trim();
+  var phone = document.getElementById("accPhone").value.trim();
+  var address = document.getElementById("accAddress").value.trim();
+  if (!name || !/^[6-9]\d{9}$/.test(phone) || !address){
+    alert("Name + 10 digit mobile (6-9 la start) + address podunga!"); return;
+  }
+  account = { name:name, phone:phone, address:address };
+  addNotif("👋", "Welcome "+name+"!", "Unga location vechu 2km ulla shops-la shopping start pannu! 🛒");
+  if (pendingAdd){ var a = pendingAdd; pendingAdd = null; goHome(); addToCart(a.si,a.pi); }
+  else goHome();
+}
+
+// ===== MY ORDERS =====
+function renderMyOrders(){
+  var box = document.getElementById("myOrdersList");
+  box.innerHTML = "";
+  var list = orders.filter(function(o){ return account && o.cust.phone===account.phone; }).reverse();
+  if (list.length===0){ box.innerHTML = "<p class='empty'>😔 Innum order pannala<br>Home-ku poi shopping pannu! 🛒</p>"; return; }
+  list.forEach(function(o){
+    var d = document.createElement("div");
+    d.className = "ord-card";
+    var itemsTxt = o.items.map(function(x){ return esc(x.name)+" × "+x.qty; }).join("<br>");
+    d.innerHTML = "<div class='ord-top'><div><strong>"+o.id+"</strong><br><small>📍 "+esc(o.shop)+"</small></div>"+
+      "<div style='text-align:right'><div class='price'>₹"+o.total+"</div><span class='badge "+(o.status==="Pending"?"pend":"")+"'>"+o.status+"</span></div></div>"+
+      "<div style='font-size:13px;line-height:1.5'>"+itemsTxt+"</div>"+
+      "<small>🕐 "+o.time+" • 🛵 30-40 min</small>"+
+      "<button class='big-btn' style='margin-top:10px;padding:11px;font-size:13px' onclick='orderAgain(\""+o.id+"\")'>🔁 Order Again</button>";
+    box.appendChild(d);
+  });
+}
+
+// ===== ORDER AGAIN =====
+function orderAgain(id){
+  var o = null;
+  for (var i=0;i<orders.length;i++) if (orders[i].id===id) o = orders[i];
+  if (!o) return;
+  var added = 0;
+  o.items.forEach(function(x){
+    for (var i=0;i<shops.length;i++){
+      if (shops[i].name!==o.shop) continue;
+      for (var j=0;j<shops[i].products.length;j++){
+        var p = shops[i].products[j];
+        if (p.name===x.name && p.stock>0){
+          var ex = cartQty(i,j);
+          var canAdd = Math.min(x.qty, p.stock - ex);
+          if (canAdd > 0){
+            if (ex > 0){
+              for (var k=0;k<cart.length;k++)
+                if (cart[k].si===i && cart[k].pi===j) cart[k].qty += canAdd;
+            } else {
+              cart.push({ si:i, pi:j, qty:canAdd });
+            }
+            added++;
+          }
+        }
+      }
+    }
+  });
+  if (added===0){ alert("😔 Indha products ippo stock-la illa!"); return; }
+  updateCartBar();
+  alert("🔁 "+added+" items cart-la add aachu!\nHome-la paaru — quantity maathi order pannu 😎");
+  goHome();
+}
+
+// ===== OWNER =====
+function ownerLogin(){
+  var name = document.getElementById("loginShopName").value.trim().toLowerCase();
+  var pass = document.getElementById("loginPassword").value;
+  var cap = document.getElementById("captchaInput").value.trim().toUpperCase();
+  var err = document.getElementById("loginError");
+  if (cap !== captchaCode){
+    err.textContent = "❌ Captcha thappu! Pudhu code varum.";
+    genCaptcha();
+    document.getElementById("captchaInput").value = "";
+    return;
+  }
+  var found = null;
+  for (var i=0;i<shops.length;i++)
+    if (shops[i].name.toLowerCase()===name && shops[i].password===pass) found = shops[i];
+  if (!found){ err.textContent = "❌ Shop name illa password thappu!"; genCaptcha(); document.getElementById("captchaInput").value = ""; return; }
+  currentOwner = found;
+  err.textContent = "";
+  document.getElementById("loginShopName").value = "";
+  document.getElementById("loginPassword").value = "";
+  document.getElementById("captchaInput").value = "";
+  document.getElementById("ownerWelcome").textContent = "👋 " + currentOwner.name;
+  ownerTab("products");
+  goTo("ownerScreen");
+}
+function ownerLogout(){ currentOwner = null; goHome(); }
+function ownerTab(t){
+  document.getElementById("tabProducts").classList.toggle("active", t==="products");
+  document.getElementById("tabOrders").classList.toggle("active", t==="orders");
+  document.getElementById("tabSub").classList.toggle("active", t==="sub");
+  document.getElementById("ownerProductsTab").classList.toggle("hidden", t!=="products");
+  document.getElementById("ownerOrdersTab").classList.toggle("hidden", t!=="orders");
+  document.getElementById("ownerSubTab").classList.toggle("hidden", t!=="sub");
+  renderSubBanner();
+  if (t==="orders") renderOwnerOrders();
+  if (t==="sub") renderSubPlans();
+  if (t==="products") renderOwnerProducts();
+}
+function renderSubBanner(){
+  var box = document.getElementById("subBannerBox");
+  var plan = PLANS[currentOwner.plan];
+  var left = Math.max(0, plan.limit - currentOwner.ordersUsed);
+  var pct = plan.limit===Infinity ? 100 : Math.min(100, currentOwner.ordersUsed/plan.limit*100);
+  var html = "";
+  if (currentOwner.plan === "none"){
+    if (left <= 0){
+      html = "<div class='sub-banner warn'><span class='s-ico'>🚨</span><div style='flex:1'>"+
+        "<b>Order limit mudinchiduchu! 🔒</b>"+
+        "<small>Customers-kku products 'Paused'-ah theriyum. Subscribe pannunga!</small>"+
+        "<div class='sub-prog'><i style='width:100%'></i></div></div>"+
+        "<button class='big-btn' style='width:auto;padding:10px 16px;font-size:13px' onclick=\"ownerTab('sub')\">💎 Subscribe</button></div>";
+    } else {
+      html = "<div class='sub-banner warn'><span class='s-ico'>⚠️</span><div style='flex:1'>"+
+        "<b>Free Trial — "+left+" orders baaki!</b>"+
+        "<small>Appuram block aagum — 💎 Plan tab-la subscribe pannunga</small>"+
+        "<div class='sub-prog'><i style='width:"+pct+"%'></i></div></div></div>";
+    }
+  } else {
+    html = "<div class='sub-banner ok'><span class='s-ico'>"+plan.ico+"</span><div style='flex:1'>"+
+      "<b>"+plan.name+" active! ♾️ Unlimited orders</b>"+
+      "<small>Nandri! Priority listing ON</small></div></div>";
+  }
+  box.innerHTML = html;
+}
+function renderSubPlans(){
+  var box = document.getElementById("subPlansBox");
+  var html = "<div class='card' style='text-align:center'>"+
+    "<h3 class='sec' style='margin:0 0 4px'>💎 Owner Subscription</h3>"+
+    "<small style='color:var(--muted)'>Ippo: <b>"+PLANS[currentOwner.plan].name+"</b>"+
+    " ("+currentOwner.ordersUsed+"/"+(PLANS[currentOwner.plan].limit===Infinity?"∞":PLANS[currentOwner.plan].limit)+" orders)</small></div>";
+  ["basic","premium","elite"].forEach(function(key){
+    var p = PLANS[key];
+    var isCurrent = currentOwner.plan === key;
+    var badge = key==="premium" ? "<span class='pop-badge'>MOST POPULAR</span>" : (key==="elite" ? "<span class='pop-badge'>BEST VALUE</span>" : "");
+    html += "<div class='plan-card"+(isCurrent?" current":"")+"'>"+badge+
+      "<div class='pc-head'><h4>"+p.ico+" "+p.name+"</h4><div class='pc-price'>₹"+p.price+"<small>/month</small></div></div>"+
+      "<ul>"+p.features.map(function(f){ return "<li>"+f+"</li>"; }).join("")+"</ul>"+
+      (isCurrent
+        ? "<button class='plan-btn active-plan' disabled>✓ Current Plan</button>"
+        : "<button class='plan-btn "+(key==="elite"?"gold":key==="premium"?"":"silver")+"' onclick=\"subscribe('"+key+"')\">"+(currentOwner.plan==="none"?"Subscribe":"Upgrade to "+p.name)+"</button>")+
+      "</div>";
+  });
+  html += "<p class='demo-note'>💳 Demo payment — real Razorpay/UPI next version-la!</p>";
+  box.innerHTML = html;
+}
+function subscribe(key){
+  var p = PLANS[key];
+  if (confirm(p.ico+" "+p.name+" — ₹"+p.price+"/month\n\nDemo payment pannalama?")){
+    currentOwner.plan = key;
+    alert("🎉 "+p.name+" activated!\n\n✅ Unlimited orders start!");
+    renderSubPlans(); renderSubBanner(); renderFeed();
+  }
+}
+function renderOwnerProducts(){
+  var box = document.getElementById("ownerProducts");
+  box.innerHTML = "";
+  currentOwner.products.forEach(function(p,i){
+    var d = document.createElement("div");
+    d.className = "card row";
+    d.innerHTML = "<div style='display:flex;gap:10px;align-items:center'>"+
+      "<div class='ci-emo' style='width:44px;height:44px;font-size:22px'>"+p.emoji+imgTag(p)+"</div>"+
+      "<div><strong>"+esc(p.name)+"</strong><br><small>"+(CAT_NAMES[p.cat]||"")+" • ₹"+p.price+"</small> "+
+      (p.stock<=5 ? "<span class='badge low'>⚠️ Low: "+p.stock+"</span>" : "<span class='badge'>✅ "+p.stock+"</span>")+"</div></div>"+
+      "<div class='stock-btns'>"+
+      "<button onclick='stk("+i+",5)'>+5</button>"+
+      "<button onclick='stk("+i+",-1)'>−1</button>"+
+      "<button class='edit' onclick='setStock("+i+")'>📦 Set</button>"+
+      "<button class='edit' onclick='editPrice("+i+")'>₹ Price</button>"+
+      "<button class='del' onclick='delP("+i+")'>🗑</button></div>";
+    box.appendChild(d);
+  });
+}
+function stk(i,d){ currentOwner.products[i].stock = Math.max(0, currentOwner.products[i].stock+d); renderOwnerProducts(); renderFeed(); }
+function setStock(i){
+  var p = currentOwner.products[i];
+  var v = prompt("'"+p.name+"' ku exact stock enna? (ippo: "+p.stock+")");
+  if (v === null) return;
+  var n = Math.floor(Number(v));
+  if (isNaN(n) || n < 0){ alert("Correct number podunga!"); return; }
+  p.stock = n;
+  renderOwnerProducts(); renderFeed();
+}
+function editPrice(i){
+  var p = currentOwner.products[i];
+  var v = prompt("'"+p.name+"' ku pudhu price enna? (ippo: ₹"+p.price+")");
+  if (v === null) return;
+  var n = Number(v);
+  if (isNaN(n) || n <= 0){ alert("Correct price podunga!"); return; }
+  p.price = Math.round(n);
+  renderOwnerProducts(); renderFeed();
+}
+function delP(i){ if (confirm("Idha delete pannalama?")){ currentOwner.products.splice(i,1); renderOwnerProducts(); renderFeed(); } }
+function addProduct(){
+  var name = document.getElementById("prodName").value.trim();
+  var price = Number(document.getElementById("prodPrice").value);
+  var stock = Math.max(0, Math.floor(Number(document.getElementById("prodQty").value)) || 0);
+  var cat = document.getElementById("prodCat").value;
+  var img = document.getElementById("prodImg").value.trim();
+  if (!name || isNaN(price) || price<=0){ alert("Product name + correct price podunga!"); return; }
+  currentOwner.products.push({ name:name, price:price, mrp:0, stock:stock, cat:cat, emoji:CAT_EMOJI[cat]||"🛍️", img:img||"" });
+  document.getElementById("prodName").value = "";
+  document.getElementById("prodPrice").value = "";
+  document.getElementById("prodQty").value = "";
+  document.getElementById("prodImg").value = "";
+  renderOwnerProducts(); renderFeed();
+  // 🆕 NOTIFICATION: ella customers-ukum pudhu product announce!
+  addNotif("📢", "Pudhu product! 🎉",
+    currentOwner.name+"-la \""+name+"\" (₹"+price+") add aachu — search panni paaru!");
+}
+function renderOwnerOrders(){
+  var box = document.getElementById("ownerOrdersList");
+  box.innerHTML = "";
+  var list = orders.filter(function(o){ return o.shop===currentOwner.name; }).reverse();
+  if (list.length===0){
+    box.innerHTML = "<p class='empty'>😔 Innum order varala</p>";
+    return;
+  }
+  list.forEach(function(o){
+    var d = document.createElement("div");
+    d.className = "ord-card";
+    var itemsTxt = o.items.map(function(x){ return "• "+esc(x.name)+" × "+x.qty+" = ₹"+(x.price*x.qty); }).join("<br>");
+    d.innerHTML = "<div class='ord-top'><div><strong>"+o.id+"</strong> <span class='badge "+(o.status==="Pending"?"pend":"")+"'>"+o.status+"</span><br><small>🕐 "+o.time+"</small></div>"+
+      "<div style='text-align:right'><div class='price'>₹"+o.total+"</div></div></div>"+
+      "<div style='font-size:13px;line-height:1.6'>"+itemsTxt+"</div>"+
+      "<div style='margin-top:8px'><small>👤 "+esc(o.cust.name)+" • 📞 "+esc(o.cust.phone)+"</small><br><small>🏠 "+esc(o.cust.addr)+"</small></div>"+
+      (o.status==="Pending" ? "<button class='big-btn' style='margin-top:10px;padding:11px;font-size:13.5px' onclick='markDel(\""+o.id+"\")'>✅ Delivered</button>" : "");
+    box.appendChild(d);
+  });
+}
+function markDel(id){
+  for (var i=0;i<orders.length;i++){
+    if (orders[i].id===id){
+      orders[i].status = "Delivered";
+      // 🆕 NOTIFICATION: customer-ku delivery update!
+      addNotif("✅", "Order Delivered! 🎉",
+        orders[i].id+" — "+orders[i].shop+"-la irundhu deliver aachu. Rate pannunga! ⭐");
+    }
+  }
+  renderOwnerOrders();
+}
+
+// ===== INIT =====
+renderCats();
+renderFeed();
+updateCartBar();
+requestLocation();
+addNotif("🛍️", "LocalShop-la varaverkirom!", "Pudhu category: 🍎 Fruits! Ippo fruits-um 30-40 min la veetuku varum.");
+</script>
+</body>
+</html>
